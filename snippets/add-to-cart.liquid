@@ -1,0 +1,64 @@
+
+<style>
+.add_TOCARTBTN {
+    position: absolute;
+    z-index: 99999;
+}
+.add_TOCARTBTN {
+    position: relative;
+}
+</style>
+{%  assign available = product.selected_or_first_available_variant.available%}
+<div class="add_TOCARTBTN">
+{% for variant in product.variants %}
+<input type="hidden" id="variantID" name="id" value="{{ variant.id }}">
+ {% endfor %}
+ <button class="add-to-cartBTN" type="button" name="add"  id="collection-cart-{{ product.id }}">
+ {% if available == true %}
+   ADD TO CART
+ {% else %}
+  Sold OUT
+ {% endif %}
+ 
+</button>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+  $(document).on('click', '#collection-cart-{{ product.id }}', function(){
+    let getVariantID = $(this).parent('.add_TOCARTBTN').find('#variantID').val();
+    alert(getVariantID);
+
+  let formObj = {
+    quantity: 1,
+    id: getVariantID,
+  };
+
+  $.ajax({
+    type:"POST",
+    url:"/cart/add.js",
+    cache:false,
+    data:formObj,
+    dataType:"json",
+    success:function(data){
+      console.log("success");
+      $('cart-drawer').addClass('active');
+      $(' .header__icon--cart ').click();
+      $('cart-drawer').removeClass('is-empty');
+      $('.drawer__inner-empty').hide();
+      $(' cart-drawer ').load( location.href + ' #CartDrawer ' );
+      $(' #cart-icon-bubble').load( location.href + ' #cart-icon-bubble ' );
+    },
+    error: function(xhr, ajaxOption , thrownError){
+      console.log("Error")
+    }
+  })
+
+
+
+  })
+
+
+</script>  
+

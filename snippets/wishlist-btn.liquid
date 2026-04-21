@@ -1,0 +1,28 @@
+  {% if customer %}
+              <button 
+                id="wishlist-btn"
+                class="wishlist-btn" 
+                data-product-id="{{ product.id }}"
+                data-product-title="{{ product.title | escape }}"
+                data-product-image="{{ product.featured_image | img_url: 'small' }}"
+                data-product-url="{{ product.url }}"
+                type="button"
+              >
+                ❤️ Add to Wishlist
+              </button>
+            {% else %}
+              {% comment %} <a href="/wish-lists" target="_blank" class="wishlist-login-btn">
+                🔐 Add Wishlist
+              </a> {% endcomment %}
+              <a 
+                href="{% if customer %}/pages/wish-lists{% else %}/account/login?return_url=/pages/wish-lists{% endif %}" 
+                class="wishlist-login-btn"
+                target="_blank"
+                >
+                {% if customer %}
+                    ❤️ View Wishlist
+                {% else %}
+                    🔐 Add Wishlist
+                {% endif %}
+                </a>
+  {% endif %}

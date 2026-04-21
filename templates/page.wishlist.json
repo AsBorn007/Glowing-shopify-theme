@@ -1,0 +1,34 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "settings": {
+        "padding_top": 28,
+        "padding_bottom": 28
+      }
+    },
+    "custom_liquid_xGbwfK": {
+      "type": "custom-liquid",
+      "name": "t:sections.custom-liquid.presets.name",
+      "settings": {
+        "custom_liquid": "<div id=\"customer-id-data\" data-id=\"{{ customer.id }}\" style=\"display: none;\"></div>\n\n<div class=\"wishlist-page\">\n  <div class=\"wishlist-header\">\n    <h1 class=\"wishlist-title\">{{ page.title }}❤️</h1>\n    <p class=\"wishlist-subtitle\">Save your favourite items and never lose them</p>\n  </div>\n\n  <div id=\"wishlist-container\" class=\"wishlist-grid\">\n    <div class=\"loader-container\">\n      <div class=\"loader\"></div>\n      <p>Loading your wishlist...</p>\n    </div>\n  </div>\n</div>\n\n\n\n<script>\n  (function() {\n    // Customer ID ko hidden div se le rahe hain\n    let CUSTOMER_ID = null;\n    const idElement = document.getElementById('customer-id-data');\n    if (idElement) {\n      CUSTOMER_ID = idElement.dataset.id;\n    }\n    \n    console.log('Customer ID from page:', CUSTOMER_ID);\n    \n    function showToast(message, isError = false) {\n      const toast = document.createElement('div');\n      toast.className = 'toast-notification' + (isError ? ' error' : '');\n      toast.textContent = message;\n      document.body.appendChild(toast);\n      setTimeout(() => toast.remove(), 3000);\n    }\n    \n    if (!CUSTOMER_ID || CUSTOMER_ID === '') {\n      const container = document.getElementById('wishlist-container');\n      if (container) {\n        container.innerHTML = `\n          <div class=\"empty-wishlist\">\n            <div class=\"empty-wishlist-icon\">🔐</div>\n            <h3>Login to view your wishlist</h3>\n            <p>Please login to see all your saved items</p>\n            <a href=\"/account/login\" class=\"btn-shop\">Login Now</a>\n          </div>\n        `;\n      }\n      return;\n    }\n    \n    function loadWishlist() {\n      if (!window.db) {\n        console.log('Waiting for Firebase...');\n        setTimeout(loadWishlist, 500);\n        return;\n      }\n      \n      console.log('Firebase ready, loading wishlist for customer:', CUSTOMER_ID);\n      \n      const container = document.getElementById('wishlist-container');\n      \n      const wishlistRef = window.dbRef(window.db, `wishlists/${CUSTOMER_ID}`);\n      window.dbGet(wishlistRef).then(snapshot => {\n        if (!snapshot.exists()) {\n          container.innerHTML = `\n            <div class=\"empty-wishlist\">\n              <div class=\"empty-wishlist-icon\">❤️</div>\n              <h3>Your wishlist is empty</h3>\n              <p>Save your favourite items here and shop them later</p>\n              <a href=\"/collections/all\" class=\"btn-shop\">Start Shopping</a>\n            </div>\n          `;\n          return;\n        }\n        \n        const wishlistData = snapshot.val();\n        const products = Object.values(wishlistData);\n        \n        if (products.length === 0) {\n          container.innerHTML = `\n            <div class=\"empty-wishlist\">\n              <div class=\"empty-wishlist-icon\">❤️</div>\n              <h3>Your wishlist is empty</h3>\n              <p>Save your favourite items here and shop them later</p>\n              <a href=\"/collections/all\" class=\"btn-shop\">Start Shopping</a>\n            </div>\n          `;\n          return;\n        }\n        \n        container.innerHTML = products.map(product => `\n          <div class=\"wishlist-card\" data-product-id=\"${escapeHtml(product.id)}\">\n            <div class=\"wishlist-card-image\">\n              <img src=\"${escapeHtml(product.image)}\" alt=\"${escapeHtml(product.title)}\" onerror=\"this.src='https://cdn.shopify.com/s/files/1/0662/2167/0503/files/no-image.png'\">\n            </div>\n            <div class=\"wishlist-card-content\">\n              <h3 class=\"wishlist-card-title\">\n                <a href=\"${escapeHtml(product.url)}\">${escapeHtml(product.title)}</a>\n              </h3>\n              <div class=\"wishlist-card-actions\">\n                <a href=\"${escapeHtml(product.url)}\" class=\"btn-view\">View Product</a>\n                <button class=\"btn-remove\" onclick=\"removeFromWishlist('${escapeHtml(product.id)}')\">Remove</button>\n              </div>\n            </div>\n          </div>\n        `).join('');\n        \n      }).catch(err => {\n        console.error('Error:', err);\n        container.innerHTML = `\n          <div class=\"empty-wishlist\">\n            <div class=\"empty-wishlist-icon\">⚠️</div>\n            <h3>Error loading wishlist</h3>\n            <p>Please refresh the page and try again</p>\n            <button onclick=\"location.reload()\" class=\"btn-shop\">Refresh Page</button>\n          </div>\n        `;\n      });\n    }\n    \n    function escapeHtml(str) {\n      if (!str) return '';\n      return String(str).replace(/[&<>]/g, function(m) {\n        if (m === '&') return '&amp;';\n        if (m === '<') return '&lt;';\n        if (m === '>') return '&gt;';\n        return m;\n      });\n    }\n    \n    window.removeFromWishlist = async (productId) => {\n      if (!CUSTOMER_ID) {\n        showToast('Please login first', true);\n        return;\n      }\n      \n      try {\n        const productRef = window.dbRef(window.db, `wishlists/${CUSTOMER_ID}/${productId}`);\n        await window.dbRemove(productRef);\n        showToast('✓ Removed from wishlist');\n        loadWishlist();\n      } catch (error) {\n        console.error('Error:', error);\n        showToast('Error removing product', true);\n      }\n    };\n    \n    // Start loading\n    loadWishlist();\n  })();\n</script>",
+        "color_scheme": "",
+        "padding_top": 40,
+        "padding_bottom": 52
+      }
+    }
+  },
+  "order": [
+    "main",
+    "custom_liquid_xGbwfK"
+  ]
+}

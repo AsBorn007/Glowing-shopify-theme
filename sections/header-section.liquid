@@ -1,0 +1,43 @@
+<header class="cux_header">
+    <div class="cux_container">
+          <nav>
+              <ul>
+                {% for link in section.settings.header_navigation.links %}
+                <li class="{% if link.links != blank %}has-dropdown{% endif %}">
+                    <a href="{{ link.url }}">{{ link.title }}</a>
+                    {% if link.links != blank %}
+                        <ul class="children_links">
+                            {% for hildlink in link.links %}
+                            <li>
+                                <a href="{{ hildlink.url }}">{{ hildlink.title }}</a>
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    {% endif %}
+                </li>
+                {% endfor %}
+              </ul>
+          </nav>
+
+    </div>
+</header>
+
+
+{% schema %}
+       {
+      "name": "Header section",
+      "tag":"section",
+      "class":"header_menu",
+      "settings": [
+        {
+              "type":"link_list",
+             "id":"header_navigation",
+             "label": "Navigation"
+          },
+      ],
+      "presets": [
+        {
+        "name": "header section "}
+      ]
+    }
+{% endschema %}
